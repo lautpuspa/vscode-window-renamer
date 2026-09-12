@@ -55,7 +55,7 @@
         {
           "id": "windowRenamer.actions",
           "name": "Window",
-          "icon": "$(edit)"
+          "icon": "media/rename.svg"
         }
       ]
     }

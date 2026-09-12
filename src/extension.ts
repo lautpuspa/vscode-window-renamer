@@ -4,9 +4,11 @@ const renameCommand = 'windowRenamer.renameWindow';
 
 class RenameWindowProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private readonly changeEmitter = new vscode.EventEmitter<void>();
+    private readonly iconUri: vscode.Uri;
     readonly onDidChangeTreeData = this.changeEmitter.event;
 
     constructor(context: vscode.ExtensionContext) {
+        this.iconUri = vscode.Uri.joinPath(context.extensionUri, 'media', 'rename.svg');
         context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration(event => {
                 if (event.affectsConfiguration('windowRenamer.showShortcutHint')) {
@@ -23,7 +25,7 @@ class RenameWindowProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     getChildren(): vscode.TreeItem[] {
         const item = new vscode.TreeItem('Rename Window', vscode.TreeItemCollapsibleState.None);
         item.command = { command: renameCommand, title: 'Rename Window' };
-        item.iconPath = new vscode.ThemeIcon('edit');
+        item.iconPath = this.iconUri;
         item.tooltip = 'Rename the active VS Code window';
 
         if (vscode.workspace.getConfiguration('windowRenamer').get<boolean>('showShortcutHint', true)) {
