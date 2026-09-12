@@ -2,7 +2,7 @@
   "name": "vscode-window-renamer",
   "displayName": "Window Renamer",
   "description": "Rename the current VS Code window from the Activity Bar.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "icon": "img/icon.png",
   "publisher": "lautpuspa",
   "license": "MIT",
