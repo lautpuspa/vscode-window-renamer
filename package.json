@@ -2,7 +2,7 @@
   "name": "vscode-window-renamer",
   "displayName": "Window Renamer",
   "description": "Rename the current VS Code window from the Activity Bar.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "publisher": "lautpuspa",
   "license": "MIT",
   "repository": {
@@ -31,16 +31,6 @@
         "mac": "cmd+alt+r"
       }
     ],
-    "configuration": {
-      "title": "Window Renamer",
-      "properties": {
-        "windowRenamer.showShortcutHint": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show the default keyboard shortcut beside Rename Window in the sidebar."
-        }
-      }
-    },
     "viewsContainers": {
       "activitybar": [
         {

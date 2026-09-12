@@ -1,24 +1,15 @@
 import * as vscode from 'vscode';
 
 const renameCommand = 'windowRenamer.renameWindow';
-const toggleShortcutCommand = 'windowRenamer.toggleShortcutHint';
+const configureShortcutCommand = 'windowRenamer.configureShortcut';
 
-type WindowRenamerNode = 'rename' | 'globalSettings' | 'showShortcutHint';
+type WindowRenamerNode = 'rename' | 'globalSettings' | 'shortcut';
 
 class RenameWindowProvider implements vscode.TreeDataProvider<WindowRenamerNode> {
-    private readonly changeEmitter = new vscode.EventEmitter<void>();
     private readonly iconUri: vscode.Uri;
-    readonly onDidChangeTreeData = this.changeEmitter.event;
 
     constructor(context: vscode.ExtensionContext) {
         this.iconUri = vscode.Uri.joinPath(context.extensionUri, 'media', 'rename.svg');
-        context.subscriptions.push(
-            vscode.workspace.onDidChangeConfiguration(event => {
-                if (event.affectsConfiguration('windowRenamer.showShortcutHint')) {
-                    this.changeEmitter.fire();
-                }
-            })
-        );
     }
 
     getTreeItem(element: WindowRenamerNode): vscode.TreeItem {
@@ -28,15 +19,12 @@ class RenameWindowProvider implements vscode.TreeDataProvider<WindowRenamerNode>
             return item;
         }
 
-        if (element === 'showShortcutHint') {
-            const enabled = vscode.workspace.getConfiguration('windowRenamer').get<boolean>('showShortcutHint', true);
-            const item = new vscode.TreeItem('Show Shortcut Hint', vscode.TreeItemCollapsibleState.None);
-            item.description = enabled ? 'On' : 'Off';
-            item.tooltip = enabled
-                ? 'Hide the Ctrl+Alt+R hint shown below Rename Window'
-                : 'Show the Ctrl+Alt+R hint shown below Rename Window';
-            item.iconPath = new vscode.ThemeIcon(enabled ? 'eye' : 'eye-closed');
-            item.command = { command: toggleShortcutCommand, title: 'Toggle Shortcut Hint' };
+        if (element === 'shortcut') {
+            const item = new vscode.TreeItem('Rename Window Shortcut', vscode.TreeItemCollapsibleState.None);
+            item.description = process.platform === 'darwin' ? '⌘⌥R' : 'Ctrl+Alt+R';
+            item.tooltip = 'Click to customize the keyboard shortcut for Rename Window';
+            item.iconPath = new vscode.ThemeIcon('keyboard');
+            item.command = { command: configureShortcutCommand, title: 'Configure Rename Window Shortcut' };
             return item;
         }
 
@@ -54,7 +42,7 @@ class RenameWindowProvider implements vscode.TreeDataProvider<WindowRenamerNode>
     }
 
     getChildren(element?: WindowRenamerNode): WindowRenamerNode[] {
-        if (element === 'globalSettings') return ['showShortcutHint'];
+        if (element === 'globalSettings') return ['shortcut'];
         if (element) return [];
         return ['rename', 'globalSettings'];
     }
@@ -64,11 +52,12 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.window.registerTreeDataProvider('windowRenamer.actions', new RenameWindowProvider(context)),
         vscode.commands.registerCommand(renameCommand, renameActiveWindow),
-        vscode.commands.registerCommand(toggleShortcutCommand, async () => {
-            const configuration = vscode.workspace.getConfiguration('windowRenamer');
-            const current = configuration.get<boolean>('showShortcutHint', true);
-            await configuration.update('showShortcutHint', !current, vscode.ConfigurationTarget.Global);
-        })
+        vscode.commands.registerCommand(configureShortcutCommand, () =>
+            vscode.commands.executeCommand(
+                'workbench.action.openGlobalKeybindings',
+                '@command:windowRenamer.renameWindow'
+            )
+        )
     );
 }
 
