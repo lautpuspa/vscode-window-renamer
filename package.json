@@ -1,0 +1,73 @@
+{
+  "name": "vscode-window-renamer",
+  "displayName": "Window Renamer",
+  "description": "Rename the current VS Code window from the Activity Bar.",
+  "version": "0.1.0",
+  "publisher": "lautpuspa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lautpuspa/vscode-window-renamer.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["window", "rename", "title", "workspace"],
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "windowRenamer.renameWindow",
+        "title": "Window Renamer: Rename Window",
+        "icon": "$(edit)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "windowRenamer.renameWindow",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      }
+    ],
+    "configuration": {
+      "title": "Window Renamer",
+      "properties": {
+        "windowRenamer.showShortcutHint": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the default keyboard shortcut beside Rename Window in the sidebar."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "windowRenamer",
+          "title": "Window Renamer",
+          "icon": "media/rename.svg"
+        }
+      ]
+    },
+    "views": {
+      "windowRenamer": [
+        {
+          "id": "windowRenamer.actions",
+          "name": "Window",
+          "icon": "$(edit)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "package": "npm run compile && vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.12",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.6.0",
+    "typescript": "^5.7.3"
+  }
+}
